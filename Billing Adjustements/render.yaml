@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: asa-billing-app
+    env: python
+    startCommand: gunicorn app:app
+    plan: free
+    buildCommand: ""
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: FLASK_SECRET
+        sync: false
