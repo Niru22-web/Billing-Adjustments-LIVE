@@ -16,6 +16,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__, static_folder=os.path.join(BASE_DIR, "Static"), template_folder=os.path.join(BASE_DIR, "templates"))
 app.secret_key = os.environ.get("FLASK_SECRET", "supersecretkey")
 
+# Root route
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 # 1) Get DB URL from env or fallback (local/dev)
 DB_URL = os.environ.get(
     "DATABASE_URL",
