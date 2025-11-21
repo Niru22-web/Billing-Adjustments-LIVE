@@ -1,4 +1,5 @@
 # app.py — PostgreSQL-backed (JOIN Enrollment -> Adjustment) — CLEANED
+import os
 
 from flask import (
     Flask, render_template, request, redirect, url_for, session,
@@ -11,7 +12,8 @@ from sqlalchemy.exc import IntegrityError
 from flask_sqlalchemy import SQLAlchemy
 
 # ---------- Config ----------
-app = Flask(__name__, static_folder="Static", template_folder="templates")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, static_folder=os.path.join(BASE_DIR, "Static"), template_folder=os.path.join(BASE_DIR, "templates"))
 app.secret_key = os.environ.get("FLASK_SECRET", "supersecretkey")
 
 # 1) Get DB URL from env or fallback (local/dev)
