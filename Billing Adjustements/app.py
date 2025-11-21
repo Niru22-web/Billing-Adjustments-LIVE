@@ -18,7 +18,7 @@ app.secret_key = os.environ.get("FLASK_SECRET", "supersecretkey")
 
 # Root route
 @app.route('/')
-def index():
+def render_home():
     return render_template('index.html')
 
 # 1) Get DB URL from env or fallback (local/dev)
