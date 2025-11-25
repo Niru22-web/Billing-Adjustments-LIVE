@@ -1,7 +1,16 @@
 services:
   - type: web
-    name: asa-data-entry
+    name: billing-adjustments-live
     env: python
+    repo: https://github.com/Niru22-web/Billing-Adjustments-LIVE
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --timeout 120
+    envVars:
+      - key: FLASK_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase: billing_db
+databases:
+  - name: billing_db
     plan: free
