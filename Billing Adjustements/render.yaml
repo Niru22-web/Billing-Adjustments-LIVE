@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: billing-adjustements
-    env: python
-    region: singapore
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
-    plan: free
