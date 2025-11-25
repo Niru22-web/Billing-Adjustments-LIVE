@@ -1,0 +1,8 @@
+ID,Centre,Date Updated,Family,Child's Name,Adjustment Amount,Note/Description,Pulling Category,Pulling Instructions,Start Date,End Date,Adjustment is Recurring?,Approval,Child Status,Family Status,Billing Cycle
+184526fe-7ec5-4861-835e-1bd7bc1fcdf6,Andover,2025-11-13,noah,Adiraju_ Ayansh,-0.01,acasa,Pull,,2025-11-11,2025-11-30,Monthly,Pending,Inactive,Inactive,Monthly
+c4450e23-fcdf-46f8-b1ca-5cb7d497b61a,Andover,2025-11-13,noah,Alvarado,121.0,wsge,Pull,,2025-11-04,2025-11-05,Monthly,Pending,Inactive,Inactive,Monthly
+ac19da9c-0199-4703-b683-34d1bd63f332,Andover,2025-11-13,noah,Amoroso,122.0,acds,Deferred pull,gxchgc,2025-11-11,2025-11-30,Monthly,Pending,Inactive,Inactive,Semi-Monthly
+efa19e38-e57a-44f7-b6a0-d88faf2dce3b,Timnath,2025-11-13,Adam,Ayala_ Oaklee,12.0,zsv,Pull,,2025-11-13,2025-11-30,Monthly,Pending,Inactive,Inactive,Semi-Monthly
+681ce771-90d2-4b68-89a2-fa74042128c2,Andover,2025-11-13,noah,Agrawal_ Parv,600.0,nahi bhai,Deferred pull,Khali nahi hai,2025-11-12,2025-11-30,One-time,Pending,Inactive,Inactive,Monthly
+e72295ae-f417-4b2c-87a0-2d1a0c4882bb,Andover,2025-11-13,noah,Amere_ Justin,451.0,bm,Deferred pull,jvc,2025-11-09,2025-11-30,Monthly,Pending,Inactive,Inactive,Semi-Monthly
+7ee29ae1-4c13-466a-bf21-56a9b2642ebe,Timnath,2025-11-14,Adam,Archer_ Delaney,15.0,zdc,Pull,,2025-11-14,2025-11-30,Monthly,Pending,Inactive,Active,Semi-Monthly
