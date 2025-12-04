@@ -169,14 +169,6 @@ select.input{padding-right:8px}
   box-shadow: var(--shadow-1);
 }
 
-.table-grid thead th {
-  background: #F6F8FB;
-  color: #222;
-  border: 1px solid #E3E7EE;
-  padding: 10px 12px;
-  text-align: left;
-}
-
 .table-grid tbody td {
   border: 1px solid #E3E7EE;
   padding: 8px 10px;
@@ -825,19 +817,10 @@ select.input{padding-right:8px}
 .table-scroll-container {
     max-height: 500px;
     overflow-y: auto;
-    overflow-x: auto;
+    overflow-x: hidden;
     border-radius: 10px;
     border: 1px solid #e5e5e5;
 }
-
-/* optional sticky header */
-.table-grid thead th {
-    position: sticky;
-    top: 0;
-    background: #fff;
-    z-index: 10;
-}
-
 
 /* Smooth scrolling */
 .table-scroll-container::-webkit-scrollbar {
@@ -858,18 +841,6 @@ select.input{padding-right:8px}
     background: #f5f5f5;
 }
 
-.table-grid thead th {
-    background: #a3d7fc;       /* light grey header */
-    color: #333;               /* dark text */
-    font-weight: 600;
-    padding: 12px;
-    border-bottom: 2px solid #e1e1e1;
-
-    position: sticky;
-    top: 0;
-    z-index: 5;
-}
-
 .viewMoreBtn {
     background: #fff;
     border-radius: 8px;
@@ -883,3 +854,64 @@ select.input{padding-right:8px}
 .filter-dropdown--status {
     margin-left: 12px;
 }
+
+/* ------------------------------
+   PERFECT FREEZE HEADER + COLUMN
+   (FINAL, CLEAN, WORKING VERSION)
+---------------------------------*/
+
+/* Optional: Freeze first column (checkbox column) */
+.table-grid td:first-child,
+.table-grid th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background: #ffffff;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.06);
+}
+/* --- FIX 1: Table must NOT collapse borders --- */
+.table-grid {
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+/* Stick header perfectly */
+.table-grid thead th {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #f1f7ff;
+}
+/* ================================
+   MODERN CLEAN FROZEN TABLE HEADER
+================================ */
+
+.table-grid thead th {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: linear-gradient(to bottom, #fafdff 0%, #e9f2ff 100%);
+    color: #2d3a45;
+    font-weight: 600;
+    padding: 12px 10px;
+    border-bottom: 2px solid #d6e4f0;
+
+    /* Subtle shadow to separate header from body */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* First column frozen look enhancement */
+.table-grid td:first-child,
+.table-grid th:first-child {
+    background: #ffffff;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.05);
+}
+.table-grid tbody tr:nth-child(even) {
+    background: #f9fcff;
+}
+
+.table-grid tbody tr:hover {
+    background: #eef6ff;
+    transition: 0.2s ease;
+}
+

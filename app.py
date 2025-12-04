@@ -311,7 +311,10 @@ def build_details_map():
     rows = Enrollment.query.all()
     m = {}
     for r in rows:
-        key = f"{(r.Centre or '').strip().lower()}|||{(r.ChildName or '').strip().lower()}"
+        centre_key = (r.Centre or "").strip().lower()
+        child_key = normalize_child_name(r.ChildName or "")
+        key = f"{centre_key}|||{child_key}"
+
         m[key] = {
             "Child Status": r.ChildStatus or "",
             "Family Status": r.FamilyStatus or "",
@@ -319,13 +322,34 @@ def build_details_map():
         }
     return m
 
+def normalize_child_name(name: str) -> str:
+    """
+    Normalize child name so DB + API + JS use same format.
+    - remove apostrophes
+    - collapse multiple spaces
+    - lowercase
+    """
+    if not name:
+        return ""
+    cleaned = name.replace("'", " ")         # remove apostrophes
+    cleaned = " ".join(cleaned.split())      # normalize spaces
+    return cleaned.strip().lower()
+
 def fill_auto_fields(payload):
-    centre = payload.get("Centre","").strip().lower()
-    child = payload.get("Child's Name","").strip().lower()
-    key = f"{centre}|||{child}"
-    details = build_details_map().get(key, {"Child Status": "", "Family Status": "", "Billing Cycle": ""})
+    centre_key = (payload.get("Centre", "") or "").strip().lower()
+    child_key = normalize_child_name(payload.get("Child's Name", "") or "")
+
+    key = f"{centre_key}|||{child_key}"
+
+    details = build_details_map().get(key, {
+        "Child Status": "",
+        "Family Status": "",
+        "Billing Cycle": ""
+    })
+
     payload.update(details)
     return payload
+
 
 # ---------- Routes: Auth ----------
 @app.route("/")
@@ -409,28 +433,38 @@ def api_children():
 
 @app.route("/api/child_details")
 def api_child_details():
-    if not require_login():
-        return abort(401)
+    centre = request.args.get("centre", "").strip()
+    child  = request.args.get("child", "").strip()
 
-    centre = (request.args.get("centre") or "").strip()
-    child  = (request.args.get("child") or "").strip()
+    # Normalize child name (apostrophes removed, extra spaces collapsed)
+    def normalize_child_name(name: str) -> str:
+        if not name:
+            return ""
+        cleaned = name.replace("'", " ")
+        cleaned = " ".join(cleaned.split())
+        return cleaned.strip().lower()
 
-    # 🔥 FIX: Normalize input (Child's Name → ChildName)
-    # remove apostrophes/spaces to match DB values safely
-    child_clean = child.replace("'", "").replace(" ", "").lower()
+    child_key = normalize_child_name(child)
 
-    row = Enrollment.query.filter(
-        db.func.lower(Enrollment.Centre) == centre.lower(),
-        db.func.lower(Enrollment.ChildName) == child_clean
-    ).first()
+    # Match using normalized child name
+    rows = Enrollment.query.all()
+    for r in rows:
+        if (r.Centre or "").strip().lower() == centre.lower():
+            db_child = normalize_child_name(r.ChildName or "")
+            if db_child == child_key:
+                return jsonify({
+                    "Family": r.Family or "",
+                    "Child Status": r.ChildStatus or "",
+                    "Family Status": r.FamilyStatus or "",
+                    "Billing Cycle": r.BillingCycle or ""
+                })
 
-    if not row:
-        return jsonify({"Child Status": "", "Family Status": "", "Billing Cycle": ""})
-
+    # No match
     return jsonify({
-        "Child Status": row.ChildStatus or "",
-        "Family Status": row.FamilyStatus or "",
-        "Billing Cycle": row.BillingCycle or ""
+        "Family": "",
+        "Child Status": "",
+        "Family Status": "",
+        "Billing Cycle": ""
     })
 
 # ---------- Dashboard ----------
