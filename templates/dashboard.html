@@ -29,8 +29,6 @@
     </div>
     {% endif %}
 
-    <!-- Search Input With Accessible Label -->
-    <label for="searchInput" class="visually-hidden">Search Records</label>
     <input
       id="searchInput"
       class="search-input"
@@ -77,9 +75,9 @@
   {% if clean_role == 'admin' %}
   <section class="card table-card bulk-section">
     <div class="bulk-actions">
-      <button id="setPendingBtn" class="btn btn-gold" type="button" aria-label="Set Pending">Set Pending</button>
-      <button id="setApprovedBtn" class="btn btn-blue" type="button" aria-label="Set Approved">Set Approved</button>
-      <button id="setNotApprovedBtn" class="btn btn-purple" type="button" aria-label="Set Not Approved">Set Not Approved</button>
+      <button id="setPendingBtn" class="btn btn-gold" type="button" aria-label="Set Pending" title="Set Pending">Set Pending</button>
+      <button id="setApprovedBtn" class="btn btn-blue" type="button" aria-label="Set Approved" title="Set Approved">Set Approved</button>
+      <button id="setNotApprovedBtn" class="btn btn-purple" type="button" aria-label="Set Not Approved" title="Set Not Approved">Set Not Approved</button>
     </div>
     <div id="bulkMsg" class="bulk-message"></div>
   </section>
@@ -92,9 +90,6 @@
       {% if clean_role == 'admin' %}
       <div class="table-header">
         <div class="filter-left">
-
-          <!-- Center Filter (Labelled) -->
-          <label for="adminCenterFilter" class="visually-hidden">Filter by Center</label>
           <select id="adminCenterFilter" class="filter-dropdown" aria-label="Filter by Center">
             <option value="">All Centers</option>
             {% for c in centers %}
@@ -102,8 +97,7 @@
             {% endfor %}
           </select>
 
-          <!-- Status Filter -->
-          <label for="statusFilter" class="visually-hidden">Filter by status</label>
+          <!-- NEW Status Filter -->
           <select id="statusFilter" class="filter-dropdown status-filter" aria-label="Filter by approval status">
               <option value="">All Status</option>
               <option value="Approved">Approved</option>
@@ -113,7 +107,7 @@
         </div>
 
         <div class="view-more-wrap">
-          <button id="viewMoreBtn" class="btn btn-ghost" type="button" aria-label="View More Columns">View More</button>
+          <button id="viewMoreBtn" class="btn btn-ghost" type="button" aria-label="View More Columns" title="View More Columns">View More</button>
         </div>
       </div>
       {% else %}
@@ -125,128 +119,121 @@
         <div class="view-more-wrap">
           <button class="viewMoreBtn btn btn-ghost"
                   type="button"
-                  aria-label="View More Columns">
+                  aria-label="View More Columns"
+                  title="View More Columns">
               View More
           </button>
         </div>
       </div>  
       {% endif %}
 
-<!-- FIXED HEADER -->
-<div class="table-header-fixed">
-    <table class="table-grid table-grid-header">
+      <!-- SCROLL ONLY THIS -->
+<div class="table-scroll-container">
+      <!-- === TABLE === -->
+      <table class="table-grid">
         <thead>
-            <tr>
-                {% if clean_role == 'admin' %}
-                <th scope="col">
-                    <label for="selectAllBtn" class="visually-hidden">Select All Rows</label>
-                    <input type="checkbox" id="selectAllBtn" aria-label="Select All Rows">
-                </th>
-                {% endif %}
+          <tr>
+            {% if clean_role == 'admin' %}
+            <th><input type="checkbox" id="selectAllBtn" aria-label="Select All Rows"></th>
+            {% endif %}
 
-                <th scope="col">Centre</th>
-                <th scope="col">Family</th>
-                <th scope="col" data-sort="child">Child's Name</th>
-                <th scope="col" data-sort="amount">Adjustment Amount</th>
-                <th scope="col">Note/Description</th>
-                <th scope="col">Pulling Category</th>
-                <th scope="col">Pulling Instructions</th>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
-                <th scope="col">Adjustment is Recurring?</th>
-                <th scope="col">Approval</th>
+            <th>Centre</th>
+            <th>Family</th>
+            <th data-column="Child's Name" class="sortable" data-sort="child">
+                Child's Name <span class="sort-icon">↑↓</span>
+            </th>
 
-                <th scope="col" class="extra-col">Child Status</th>
-                <th scope="col" class="extra-col">Family Status</th>
-                <th scope="col" class="extra-col">Billing Cycle</th>
+            <th data-column="Adjustment Amount" class="sortable" data-sort="amount">
+                Adjustment Amount <span class="sort-icon">↑↓</span>
+            </th>
+            <th>Note/Description</th>
+            <th>Pulling Category</th>
+            <th>Pulling Instructions</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Adjustment is Recurring?</th>
+            <th>Approval</th>
 
-                <th scope="col">Actions</th>
-            </tr>
+            <!-- Extra Columns -->
+            <th class="hidden-col extra-col">Child Status</th>
+            <th class="hidden-col extra-col">Family Status</th>
+            <th class="hidden-col extra-col">Billing Cycle</th>
+
+            <th>Actions</th>
+          </tr>
         </thead>
-    </table>
+
+        <tbody id="recordsTbody">
+          {% for row in data %}
+          <tr data-id="{{ row['ID'] }}">
+            {% if clean_role == 'admin' %}
+            <td><input type="checkbox" class="row-select" aria-label="Select row"></td>
+            {% endif %}
+
+            <td data-key="Centre">{{ row["Centre"] }}</td>
+            <td data-key="Family">{{ row["Family"] }}</td>
+            <td data-key="Child's Name">{{ row["Child's Name"] }}</td>
+            <td data-key="Adjustment Amount">${{ row["Adjustment Amount"] }}</td>
+            <td data-key="Note/Description">{{ row["Note/Description"] }}</td>
+            <td data-key="Pulling Category">{{ row["Pulling Category"] }}</td>
+            <td data-key="Pulling Instructions">{{ row["Pulling Instructions"] }}</td>
+            <td data-key="Start Date">{{ row["Start Date"] }}</td>
+            <td data-key="End Date">{{ row["End Date"] }}</td>
+            <td data-key="Adjustment is Recurring?">{{ row["Adjustment is Recurring?"] }}</td>
+            <td data-key="Approval">{{ row["Approval"] }}</td>
+
+            <td class="hidden-col extra-col" data-key="Child Status">{{ row["Child Status"] }}</td>
+            <td class="hidden-col extra-col" data-key="Family Status">{{ row["Family Status"] }}</td>
+            <td class="hidden-col extra-col" data-key="Billing Cycle">{{ row["Billing Cycle"] }}</td>
+
+            <!-- ACTION BUTTONS -->
+            <td class="t-actions">
+              <button type="button" class="t-btn icon edit" aria-label="Edit Record" title="Edit Record">
+                <img src="/Static/img/edit.png" alt="">
+              </button>
+
+              <button type="button" class="t-btn icon delete" aria-label="Delete Record" title="Delete Record">
+                <img src="/Static/img/delete.png" alt="">
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
 </div>
 
-
-<!-- SCROLLABLE BODY -->
-<div class="table-horizontal-scroll">
-    <div class="table-scroll-container">
-        <table class="table-grid table-grid-body">
-            <tbody id="recordsTbody">
-
-                {% for row in data %}
-                <tr data-id="{{ row['ID'] }}">
-
-                    {% if clean_role == 'admin' %}
-                    <td>
-                        <label class="visually-hidden">Select Row</label>
-                        <input type="checkbox" class="row-select" aria-label="Select Row">
-                    </td>
-                    {% endif %}
-
-                    <td>{{ row["Centre"] }}</td>
-                    <td>{{ row["Family"] }}</td>
-                    <td>{{ row["Child's Name"] }}</td>
-                    <td>${{ row["Adjustment Amount"] }}</td>
-                    <td>{{ row["Note/Description"] }}</td>
-                    <td>{{ row["Pulling Category"] }}</td>
-                    <td>{{ row["Pulling Instructions"] }}</td>
-                    <td>{{ row["Start Date"] }}</td>
-                    <td>{{ row["End Date"] }}</td>
-                    <td>{{ row["Adjustment is Recurring?"] }}</td>
-                    <td>{{ row["Approval"] }}</td>
-
-                    <td class="extra-col">{{ row["Child Status"] }}</td>
-                    <td class="extra-col">{{ row["Family Status"] }}</td>
-                    <td class="extra-col">{{ row["Billing Cycle"] }}</td>
-
-                    <td class="t-actions">
-                        <button class="t-btn icon edit" aria-label="Edit Record">
-                            <img src="/Static/img/edit.png" alt="Edit">
-                        </button>
-                        <button class="t-btn icon delete" aria-label="Delete Record">
-                            <img src="/Static/img/delete.png" alt="Delete">
-                        </button>
-                    </td>
-
-                </tr>
-                {% endfor %}
-
-            </tbody>
-        </table>
-    </div>
-</div>
-
-      <!-- === FOOTER === -->
+      <!-- === FOOTER: Pagination + Rows-per-page === -->
       <div class="table-footer">
 
-        <!-- Rows per page -->
+        <!-- LEFT -->
         <div class="rows-per-page">
-          <label for="rowsPerPageSelect">Show rows:</label>
+          Show:
           <select id="rowsPerPageSelect" aria-label="Rows per page">
             <option value="5">5</option>
             <option value="10" selected>10</option>
             <option value="15">15</option>
             <option value="20">20</option>
           </select>
+          rows
         </div>
 
-        <!-- Pagination -->
+        <!-- RIGHT -->
         <div class="pagination-container">
-          <button id="prevPage" class="page-nav-btn" type="button" aria-label="Previous Page">Previous</button>
+          <button id="prevPage" class="page-nav-btn" type="button" aria-label="Previous Page" title="Previous Page">Previous</button>
           <div id="pagination" class="pagination-numbers"></div>
-          <button id="nextPage" class="page-nav-btn" type="button" aria-label="Next Page">Next</button>
+          <button id="nextPage" class="page-nav-btn" type="button" aria-label="Next Page" title="Next Page">Next</button>
         </div>
 
       </div>
 
       {% if clean_role == 'user' %}
       <div class="add-row-wrap">
-        <button id="addRowBtn" class="btn btn-blue" type="button" aria-label="Add New Record">Add Record</button>
+        <button id="addRowBtn" class="btn btn-blue" type="button" aria-label="Add New Record" title="Add New Record">Add Record</button>
       </div>
       {% endif %}
 
       <div class="export-bar">
-        <a id="exportBtn" class="btn btn-purple" href="/export" aria-label="Export to Excel">Export Excel</a>
+        <a id="exportBtn" class="btn btn-purple" href="/export" aria-label="Export to Excel" title="Export to Excel">Export Excel</a>
       </div>
 
     </div>
