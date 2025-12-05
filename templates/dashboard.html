@@ -40,56 +40,44 @@
     <a href="/logout" class="btn btn-ghost logout-btn">Logout</a>
   </div>
 
-  <!-- ⭐⭐⭐ NEW KPI SUMMARY SECTION ⭐⭐⭐ -->
-  <section class="kpi-summary-wrapper">
-
-    <div class="kpi-summary-card">
-
-        <div class="kpi-summary-title">Approval Summary</div>
-
-        <div class="kpi-summary-line"></div>
-
-        <div class="kpi-summary-grid">
-
-            <div class="kpi-summary-item">
-                <div class="kpi-value">{{ total }}</div>
-                <div class="kpi-label">Total Records</div>
-            </div>
-
-            <div class="kpi-summary-item">
-                <div class="kpi-value green">{{ approved_count }}</div>
-                <div class="kpi-label">Approved</div>
-            </div>
-
-            <div class="kpi-summary-item">
-                <div class="kpi-value red">{{ not_approved_count }}</div>
-                <div class="kpi-label">Not Approved</div>
-            </div>
-
-            <div class="kpi-summary-item">
-                <div class="kpi-value orange">{{ pending_count }}</div>
-                <div class="kpi-label">Pending</div>
-            </div>
-
-            <div class="kpi-summary-item">
-                <div class="kpi-value gold">{{ total_adjustment_amount }}</div>
-                <div class="kpi-label">Total Amount</div>
-            </div>
-
-        </div>
-
+  <!-- === KPI CARDS === -->
+  <section class="kpis">
+    <div class="card kpi blue">
+      <div>{{ total }}</div>
+      <small>Total Records</small>
     </div>
 
+    <div class="card kpi purple">
+      <div class="kpi-inner">
+        <div class="kpi-mini">
+          <span class="count green">{{ approved_count }}</span>
+          <small>Approved</small>
+        </div>
+        <div class="kpi-mini">
+          <span class="count red">{{ not_approved_count }}</span>
+          <small>Not Approved</small>
+        </div>
+        <div class="kpi-mini">
+          <span class="count orange">{{ pending_count }}</span>
+          <small>Pending</small>
+        </div>
+      </div>
+      <small class="kpi-title">Approvals Summary</small>
+    </div>
+
+    <div class="card kpi gold">
+      <div class="badge gold">{{ total_adjustment_amount }}</div>
+      <small>Total Amount</small>
+    </div>
   </section>
-  <!-- ⭐⭐⭐ END KPI SECTION ⭐⭐⭐ -->
 
   <!-- === ADMIN BULK BUTTONS === -->
   {% if clean_role == 'admin' %}
   <section class="card table-card bulk-section">
     <div class="bulk-actions">
-      <button id="setPendingBtn" class="btn btn-gold">Set Pending</button>
-      <button id="setApprovedBtn" class="btn btn-blue">Set Approved</button>
-      <button id="setNotApprovedBtn" class="btn btn-purple">Set Not Approved</button>
+      <button id="setPendingBtn" class="btn btn-gold" type="button" aria-label="Set Pending" title="Set Pending">Set Pending</button>
+      <button id="setApprovedBtn" class="btn btn-blue" type="button" aria-label="Set Approved" title="Set Approved">Set Approved</button>
+      <button id="setNotApprovedBtn" class="btn btn-purple" type="button" aria-label="Set Not Approved" title="Set Not Approved">Set Not Approved</button>
     </div>
     <div id="bulkMsg" class="bulk-message"></div>
   </section>
@@ -102,14 +90,15 @@
       {% if clean_role == 'admin' %}
       <div class="table-header">
         <div class="filter-left">
-          <select id="adminCenterFilter" class="filter-dropdown">
+          <select id="adminCenterFilter" class="filter-dropdown" aria-label="Filter by Center">
             <option value="">All Centers</option>
             {% for c in centers %}
             <option value="{{ c }}" {% if selected_center == c %}selected{% endif %}>{{ c }}</option>
             {% endfor %}
           </select>
 
-          <select id="statusFilter" class="filter-dropdown">
+          <!-- NEW Status Filter -->
+          <select id="statusFilter" class="filter-dropdown status-filter" aria-label="Filter by approval status">
               <option value="">All Status</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
@@ -117,32 +106,39 @@
           </select>
         </div>
 
-        <button id="viewMoreBtn" class="btn btn-ghost">View More</button>
+        <div class="view-more-wrap">
+          <button id="viewMoreBtn" class="btn btn-ghost" type="button" aria-label="View More Columns" title="View More Columns">View More</button>
+        </div>
       </div>
-
       {% else %}
       <div class="table-header">
         <div class="center-label">
           Center: <strong>{{ user_center }}</strong>
         </div>
-        <button class="viewMoreBtn btn btn-ghost">View More</button>
-      </div>
+
+        <div class="view-more-wrap">
+          <button class="viewMoreBtn btn btn-ghost"
+                  type="button"
+                  aria-label="View More Columns"
+                  title="View More Columns">
+              View More
+          </button>
+        </div>
+      </div>  
       {% endif %}
 
-      <!-- === SCROLL WRAPPER === -->
-      <div class="table-scroll-container">
-
+      <!-- SCROLL ONLY THIS -->
+<div class="table-scroll-container">
       <!-- === TABLE === -->
       <table class="table-grid">
         <thead>
           <tr>
             {% if clean_role == 'admin' %}
-            <th><input type="checkbox" id="selectAllBtn"></th>
+            <th><input type="checkbox" id="selectAllBtn" aria-label="Select All Rows"></th>
             {% endif %}
 
             <th>Centre</th>
             <th>Family</th>
-
             <th data-column="Child's Name" class="sortable" data-sort="child">
                 Child's Name <span class="sort-icon">↑↓</span>
             </th>
@@ -150,7 +146,6 @@
             <th data-column="Adjustment Amount" class="sortable" data-sort="amount">
                 Adjustment Amount <span class="sort-icon">↑↓</span>
             </th>
-
             <th>Note/Description</th>
             <th>Pulling Category</th>
             <th>Pulling Instructions</th>
@@ -159,6 +154,7 @@
             <th>Adjustment is Recurring?</th>
             <th>Approval</th>
 
+            <!-- Extra Columns -->
             <th class="hidden-col extra-col">Child Status</th>
             <th class="hidden-col extra-col">Family Status</th>
             <th class="hidden-col extra-col">Billing Cycle</th>
@@ -170,44 +166,49 @@
         <tbody id="recordsTbody">
           {% for row in data %}
           <tr data-id="{{ row['ID'] }}">
-
             {% if clean_role == 'admin' %}
-            <td><input type="checkbox" class="row-select"></td>
+            <td><input type="checkbox" class="row-select" aria-label="Select row"></td>
             {% endif %}
 
-            <td>{{ row["Centre"] }}</td>
-            <td>{{ row["Family"] }}</td>
-            <td>{{ row["Child's Name"] }}</td>
-            <td>${{ row["Adjustment Amount"] }}</td>
-            <td>{{ row["Note/Description"] }}</td>
-            <td>{{ row["Pulling Category"] }}</td>
-            <td>{{ row["Pulling Instructions"] }}</td>
-            <td>{{ row["Start Date"] }}</td>
-            <td>{{ row["End Date"] }}</td>
-            <td>{{ row["Adjustment is Recurring?"] }}</td>
-            <td>{{ row["Approval"] }}</td>
+            <td data-key="Centre">{{ row["Centre"] }}</td>
+            <td data-key="Family">{{ row["Family"] }}</td>
+            <td data-key="Child's Name">{{ row["Child's Name"] }}</td>
+            <td data-key="Adjustment Amount">${{ row["Adjustment Amount"] }}</td>
+            <td data-key="Note/Description">{{ row["Note/Description"] }}</td>
+            <td data-key="Pulling Category">{{ row["Pulling Category"] }}</td>
+            <td data-key="Pulling Instructions">{{ row["Pulling Instructions"] }}</td>
+            <td data-key="Start Date">{{ row["Start Date"] }}</td>
+            <td data-key="End Date">{{ row["End Date"] }}</td>
+            <td data-key="Adjustment is Recurring?">{{ row["Adjustment is Recurring?"] }}</td>
+            <td data-key="Approval">{{ row["Approval"] }}</td>
 
-            <td class="hidden-col extra-col">{{ row["Child Status"] }}</td>
-            <td class="hidden-col extra-col">{{ row["Family Status"] }}</td>
-            <td class="hidden-col extra-col">{{ row["Billing Cycle"] }}</td>
+            <td class="hidden-col extra-col" data-key="Child Status">{{ row["Child Status"] }}</td>
+            <td class="hidden-col extra-col" data-key="Family Status">{{ row["Family Status"] }}</td>
+            <td class="hidden-col extra-col" data-key="Billing Cycle">{{ row["Billing Cycle"] }}</td>
 
+            <!-- ACTION BUTTONS -->
             <td class="t-actions">
-              <button class="t-btn icon edit"><img src="/Static/img/edit.png"></button>
-              <button class="t-btn icon delete"><img src="/Static/img/delete.png"></button>
+              <button type="button" class="t-btn icon edit" aria-label="Edit Record" title="Edit Record">
+                <img src="/Static/img/edit.png" alt="">
+              </button>
+
+              <button type="button" class="t-btn icon delete" aria-label="Delete Record" title="Delete Record">
+                <img src="/Static/img/delete.png" alt="">
+              </button>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+</div>
 
-      </div>
-
-      <!-- === FOOTER === -->
+      <!-- === FOOTER: Pagination + Rows-per-page === -->
       <div class="table-footer">
 
+        <!-- LEFT -->
         <div class="rows-per-page">
           Show:
-          <select id="rowsPerPageSelect">
+          <select id="rowsPerPageSelect" aria-label="Rows per page">
             <option value="5">5</option>
             <option value="10" selected>10</option>
             <option value="15">15</option>
@@ -216,24 +217,26 @@
           rows
         </div>
 
+        <!-- RIGHT -->
         <div class="pagination-container">
-          <button id="prevPage" class="page-nav-btn">Previous</button>
+          <button id="prevPage" class="page-nav-btn" type="button" aria-label="Previous Page" title="Previous Page">Previous</button>
           <div id="pagination" class="pagination-numbers"></div>
-          <button id="nextPage" class="page-nav-btn">Next</button>
+          <button id="nextPage" class="page-nav-btn" type="button" aria-label="Next Page" title="Next Page">Next</button>
         </div>
 
       </div>
 
       {% if clean_role == 'user' %}
       <div class="add-row-wrap">
-        <button id="addRowBtn" class="btn btn-blue">Add Record</button>
+        <button id="addRowBtn" class="btn btn-blue" type="button" aria-label="Add New Record" title="Add New Record">Add Record</button>
       </div>
       {% endif %}
 
       <div class="export-bar">
-        <a id="exportBtn" class="btn btn-purple" href="/export">Export Excel</a>
+        <a id="exportBtn" class="btn btn-purple" href="/export" aria-label="Export to Excel" title="Export to Excel">Export Excel</a>
       </div>
 
+    </div>
   </section>
 
   <footer class="min">© {{ current_year or 2025 }} ASA</footer>
